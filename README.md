@@ -1,5 +1,7 @@
 # gradients-and-behavior
-Code used in the various posters and papers relating to my project with DSST on the relationship between cortical gradients and behavior/cognition in children.
+Authors: Mia Zwally, Dustin Moraczewski, Ka Chun Lam, and Adam Thomas.
+
+This repository contains code used in the various posters and papers relating to my project with DSST on the relationship between cortical gradients and behavior/cognition in children.
 
 See various folders for code relating to each submission. Each submission directory has a 'gradients' and a 'behavior' code directory, as well as a 'CCA' package directory.
 
