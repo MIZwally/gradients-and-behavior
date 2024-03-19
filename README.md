@@ -1,5 +1,5 @@
 # gradients-and-behavior
-Authors: Mia Zwally, Dustin Moraczewski, Ka Chun Lam, and Adam Thomas.
+Authors: Mia Zwally, Ka Chun Lam, Adam Thomas, and Dustin Moraczewski.
 
 This repository contains code used in the various posters and papers relating to my project with DSST on the relationship between cortical gradients and behavior/cognition in children.
 
