@@ -1,10 +1,9 @@
 import pandas as pd
 import numpy as np
-from CCA.utils import *
+from utils import *
 import matplotlib.pyplot as plt
 
 def main() :
-    
     unfiltered_scores = pd.read_csv("/data/NIMH_scratch/zwallymi/behavioral/no_na_scores.csv", dtype=str)
     no_subject = unfiltered_scores[unfiltered_scores.columns[2:]]
     no_cash = pd.concat([no_subject[no_subject.columns[:10]], no_subject[no_subject.columns[11:]]], axis=1)
