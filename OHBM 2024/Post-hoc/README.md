@@ -3,8 +3,7 @@ The following code was used for post-hoc analyses, which consisted of various co
 These files can be found in the 'gradients' directory:
 
 'nik_ts_to_fc.py' - converts the time series information from original study to fc matrices in Schaefer 400 or 200 parcellated space
-
-'nik_mats.py' - regresses out site confounds from related matrices
+  'nik_mats.py' - regresses out site confounds from related matrices
 
 'nik_group_and_spearman.py' - create gradients and individual-to-group spearman correlations
 
