@@ -37,7 +37,7 @@ def main() :
     Ypc = np.load('/data/NIMH_scratch/zwallymi/behavioral/new_regressed_behavioral_pca.npy')
 
     #compute cca
-    A, B, cc = seber_cca(center(Ypc), center(Xpc), 2, 2)
+    A, B, cc = seber_cca(center(Xpc), center(Ypc), 2, 2)
     print("CCA mode correlations: ", cc)     
 
     #run permutation test, see permcca documentation for output info
