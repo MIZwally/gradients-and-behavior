@@ -1,10 +1,6 @@
 import numpy as np
-import pandas as pd
-from sklearn.cross_decomposition import CCA
 from CCA.utils import *
 from CCA.permcca import permcca
-import matplotlib.pyplot as plt
-import seaborn as sns
 import scipy
 
 def seber_cca(Y, X, R, S):
