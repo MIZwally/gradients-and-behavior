@@ -35,32 +35,13 @@ def main() :
         if not os.path.exists(directory) :
             print("no directory")
             continue
-        os.chdir(directory)
-        #collects the run numbers of all resting state runs for this subject
-        files = os.listdir()
-        rest = [x for x in files if 'rest' in x]
-        runs = [y for y in rest if 'dtseries.nii' in y]
-        run_nums = [z[z.find('run-')+4:z.find('run-')+5] for z in runs]
-        #evaluates mean fd for each run
-        good_runs = []
-        temp_ex = []
-        to_ex = False
-        for run in run_nums :
-            cf_file =f'{sub}_ses-baselineYear1Arm1_task-rest_run-{run}_desc-confounds_timeseries.tsv'
-            cfs = pd.read_csv(f'{directory}/{cf_file}', sep='\t')
-            mean_fd = cfs['framewise_displacement'].mean()
-            if mean_fd >= 0.5 :
-                print('mean fd too high')
-                temp_ex.append(run)
-                to_ex = True
-                continue
-            good_runs.append(run)
+        exclude_any, bad_runs, good_runs, run_nums = IndividualMatrix.check_runs(sub)
         #adds runs and subject to overall lists 
-        if to_ex :
+        if exclude_any :
             #adds sub and run to exclusion list if any run is excluded
             fd_exclusion_subs.append(sub)
-            fd_exclusion_runs.append(temp_ex)
-        if temp_ex != run_nums :
+            fd_exclusion_runs.append(bad_runs)
+        if bad_runs != run_nums :
             #adds sub and run to normal list if not all runs are excluded
             subjects.append(sub)
             all_runs.append(good_runs)
@@ -76,21 +57,18 @@ def main() :
             small, few = IndividualMatrix.check_volumes(subjects[sub], i)
             if not small :
                 if not few :
-                    #4 = both problems
-                    temp.append(3)
+                    temp.append(3) #3 = both problems
                 else : 
-                    #2 = run is too short
-                    temp.append(1)
+                    temp.append(1) #1 = run is too short
             elif not few :
-                #3 = too many volumes removed in cleaning
-                temp.append(2)
+                temp.append(2) #2 = too many volumes removed in cleaning
             else :
-                temp.append(0)
+                temp.append(0) #0 = no problems
         exclusion.append(temp)
 
     print(exclusion)
 
-    #make inclusion and exclusion lists
+    #make inclusion list
     include = []
     for files, runs in zip(all_runs, exclusion) :
         temp = [file for file, run in zip(files, runs) if run == 0]
@@ -110,7 +88,6 @@ def main() :
 
     #get timeseries for each run to be included
     all_timeseries = [None] * len(usable_subjects)
-    i = 0;
     for sub, list in zip(subjects, include) : 
         if list == [] :
             continue
@@ -125,7 +102,6 @@ def main() :
             temp = IndividualMatrix.clean_smooth_and_project(directory, sub, lscratch, run)
             timeseries.append(temp)
         all_timeseries[i] = timeseries
-        i += 1
 
     #combine all runs for one subject
     concatenated = [None] * len(all_timeseries)

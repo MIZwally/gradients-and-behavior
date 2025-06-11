@@ -33,15 +33,15 @@ def center(X):
 
 def main() :
     #load in sides of CCA
-    Xpc = np.load('/data/NIMH_scratch/zwallymi/gradients/new_regressed_spearman_correlations.npy')
-    Ypc = np.load('/data/NIMH_scratch/zwallymi/behavioral/new_regressed_behavioral_pca.npy')
-
+    Xpc = np.load('/data/NIMH_scratch/zwallymi/gradients/regressed_spearman_correlations.npy')
+    Ypc = np.load('/data/NIMH_scratch/zwallymi/behavioral/regressed_behavioral_pca.npy')
+    pset10k = np.load('/data/NIMH_scratch/zwallymi/gradients_and_behavior/10kperm/10kperm_pset.npy')
     #compute cca
-    A, B, cc = seber_cca(center(Xpc), center(Ypc), 2, 2)
+    A, B, cc = seber_cca(center(Xpc[:,:9]), center(Ypc), 2, 2)
     print("CCA mode correlations: ", cc)     
 
     #run permutation test, see permcca documentation for output info
-    p, r, A, B, U, V, perm_dist = permcca(Xpc, Ypc, 10000)
+    p, r, A, B, U, V, perm_dist = permcca(Xpc[:,:9], Ypc, 10000, Pset=pset10k.T)
     print("Permutation test p-values: ", p)
 
 if __name__ == "__main__":

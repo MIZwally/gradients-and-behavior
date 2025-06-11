@@ -7,12 +7,39 @@ from nilearn import image
 from nilearn.connectome import ConnectivityMeasure
 import numpy as np
 import subprocess
+import os
+import pandas as pd
 
 scratch = '/data/NIMH_scratch/zwallymi/gradients/'
 
-#This module exists to make a gradient for a particular subject using the create_individual_gradient() funciton, which is at the bottom.
-#The other functions are used in the create_individual_gradient() function, except for plot_gradient(), which can be called to visualize the gradient.
-#The create_individual_gradient() function requires two arguments: the path to the dtseries file for the subject and the number of gradients you want
+#This module contains the functions called in 'individual_files.py' to create functional connectivity matrices for a list of subjects
+
+
+def check_runs(sub, directory) :
+    #determines if the subject's runs should be excluded for too high of a mean framewise displacement
+    #returns exclusion boolean, two lists for the good and bad runs, and a list of the runs' numbers
+    
+    os.chdir(directory)
+    #collects the run numbers of all resting state runs for this subject
+    files = os.listdir()
+    rest = [x for x in files if 'rest' in x]
+    runs = [y for y in rest if 'dtseries.nii' in y]
+    run_nums = [z[z.find('run-')+4:z.find('run-')+5] for z in runs] #the numbers assigned to each run
+    #evaluates mean fd for each run and assigns as good or bad
+    good_runs = []
+    bad_runs = []
+    exclude_any = False #indicates whether or not exclusions occur, to prevent empty lists in exclusion list
+    for run in run_nums :
+        cf_file =f'{sub}_ses-baselineYear1Arm1_task-rest_run-{run}_desc-confounds_timeseries.tsv'
+        cfs = pd.read_csv(f'{directory}/{cf_file}', sep='\t')
+        mean_fd = cfs['framewise_displacement'].mean()
+        if mean_fd >= 0.5 :
+            print('mean fd too high')
+            bad_runs.append(run)
+            exclude_any = True
+            continue
+        good_runs.append(run)
+    return exclude_any, bad_runs, good_runs, run_nums
 
 def check_volumes(sub, run) :
     #determines if this run has enough volumes that pass motion qualifications
@@ -20,7 +47,7 @@ def check_volumes(sub, run) :
     
     pwd = f'/data/ABCD_MBDU/abcd_bids/derivatives/fmriprep/fmriprep_20.2.0/{sub}/out/fmriprep/{sub}/ses-baselineYear1Arm1/func/'
     file = f'{sub}_ses-baselineYear1Arm1_task-rest_run-{run}_space-fsLR_den-91k_bold.dtseries.nii'
-    confounds_out, sample_mask = load_confounds(pwd+file, strategy=('motion','wm_csf', 'scrub'), motion='full', scrub=5,
+    _, sample_mask = load_confounds(pwd+file, strategy=('motion','wm_csf', 'scrub'), motion='full', scrub=5,
                                                     fd_threshold=0.3, std_dvars_threshold=3, wm_csf='basic', 
                                                     compcor='anat_combined', n_compcor=5, demean=True)
 
