@@ -1,6 +1,6 @@
 import argparse
 from brainspace.gradient import GradientMaps
-import IndividualMatrix
+import Packages.IndividualMatrix as IndividualMatrix
 import numpy as np
 import pandas as pd
 import os 

@@ -1,6 +1,6 @@
 import numpy as np
-from CCA.utils import *
-from CCA.permcca import permcca
+from Packages.CCA.utils import *
+from Packages.CCA.permcca import permcca
 import scipy
 
 def seber_cca(Y, X, R, S):

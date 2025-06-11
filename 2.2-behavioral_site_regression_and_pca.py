@@ -1,7 +1,7 @@
 import numpy as np
 from neuroCombat import neuroCombat
 import pandas as pd
-from CCA.utils import *
+from Packages.CCA.utils import *
 import pickle
 import matplotlib.pyplot as plt
 

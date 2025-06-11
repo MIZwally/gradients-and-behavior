@@ -1,0 +1,21 @@
+[project]
+name = "gradients-and-behavior"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "brainspace>=0.1.20",
+    "matplotlib>=3.9.4",
+    "neurocombat>=0.2.12",
+    "neuromaps>=0.0.5",
+    "nibabel>=5.3.2",
+    "nilearn>=0.11.1",
+    "numpy>=2.0.2",
+    "pandas>=2.3.0",
+    "scikit-learn>=1.6.1",
+    "scipy>=1.13.1",
+    "seaborn>=0.13.2",
+    "statsmodels>=0.14.4",
+    "tqdm>=4.67.1",
+]

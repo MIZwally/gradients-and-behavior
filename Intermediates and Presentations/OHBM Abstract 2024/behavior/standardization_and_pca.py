@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from utils import *
+from Packages.CCA.utils import *
 import matplotlib.pyplot as plt
 
 def main() :

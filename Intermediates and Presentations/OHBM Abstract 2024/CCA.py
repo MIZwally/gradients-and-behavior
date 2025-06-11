@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn.cross_decomposition import CCA
-from utils import *
+from Packages.CCA.utils import *
 
 def main() :
     #load behavioral and gradient data as numpy arrays

@@ -5,7 +5,7 @@ import numpy as np
 import os
 import pandas as pd
 from sklearn.utils import resample
-from utils import *
+from Packages.CCA.utils import *
 import matplotlib.pyplot as plt
 from sklearn.cross_decomposition import CCA
 
