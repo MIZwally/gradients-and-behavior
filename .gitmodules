@@ -1,6 +1,3 @@
-[submodule "name=3.0-CCA"]
-	path = name=3.0-CCA
-	url = https://github.com/jefferykclam/CCA.git
-[submodule "3.0-CCA"]
-	path = 3.0-CCA
+[submodule "0-CCA"]
+	path = 0-CCA
 	url = https://github.com/jefferykclam/CCA.git
