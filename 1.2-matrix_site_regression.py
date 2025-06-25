@@ -6,11 +6,11 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pickle
 
-#This code was used to regress site confounds from the fc matrix data
-#subject list may be required if using different samples for different parts
+# Regresses site confounds from the fc matrix data
+# subject list may be required if using different samples for different parts
 
 def main() : 
-    #create 3d matrix of fc matrices, flatten to 2d, and get list of subjects
+    # create 3d array of fc matrices, flatten to 2d, and get list of subjects
     dir = '/data/NIMH_scratch/zwallymi/gradients/individual_files/matrices'
     os.chdir(dir)
     files = os.listdir()
@@ -19,7 +19,7 @@ def main() :
     flat_matrices = np.array(flattened)
     subjects = [x[4:8]+'_'+x[8:19] for x in files]
 
-    #obtain site and family values for each subject
+    # obtain site and family values for each subject
     admin = pd.read_csv('/data/NIMH_scratch/zwallymi/tabulated_release5/core/abcd-general/abcd_y_lt.csv')
     age = admin['interview_age']
     admin = admin[admin.columns[:3]]
@@ -29,7 +29,7 @@ def main() :
     admin_filtered['src_subject_id'] = pd.Categorical(admin_filtered['src_subject_id'], categories=subjects, ordered=True)
     sorted_admin = admin_filtered.sort_values('src_subject_id')
 
-    #obtaining sex
+    # obtaining sex
     demo = pd.read_csv('/data/NIMH_scratch/zwallymi/tabulated_release5/core/abcd-general/abcd_p_demo.csv')
     demo_baseline = demo[demo['eventname']=='baseline_year_1_arm_1']
     sex = pd.concat([demo_baseline['src_subject_id'], demo_baseline['demo_sex_v2']], axis=1)
@@ -41,19 +41,19 @@ def main() :
     age_ids = list(sorted_admin['interview_age'])
     sex_ids = list(sorted_sex['demo_sex_v2'])
 
-    #remove matrices that do not have site variable
+    # remove matrices that do not have site variable
     indices = []
     for sub in subjects :
         if sub in sorted_admin['src_subject_id'].values :
             indices.append(subjects.index(sub))
     flat_matrices = flat_matrices[indices, :]
 
-    #regress out site
+    # regress out site
     covars = pd.DataFrame({'site': site_ids, 'age': age_ids, 'sex': sex_ids})
     combat = neuroCombat(dat=flat_matrices.T, covars=covars, batch_col='site', 
                             categorical_cols=['sex'], continuous_cols=['age'])
 
-    #save new matrices
+    # save new matrices
     diag = np.diag(np.diag(matrices[0]))
     for i, data in enumerate(combat['data'].T) :
         new = np.zeros((400, 400))
@@ -63,7 +63,7 @@ def main() :
         sub = f'sub-{subjects[i][:4]}{subjects[i][5:]}'
         np.save(f'{newdir}/{sub}_regressed_matrix.npy', new)
         
-    #save confound information
+    # save confound information
     with open('/data/NIMH_scratch/zwallymi/gradients/individual_files/regressed/combat_estimates.pkl', 'wb') as file:
         pickle.dump(combat['estimates'], file)
 
