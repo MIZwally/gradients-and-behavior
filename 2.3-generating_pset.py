@@ -6,10 +6,7 @@ from tqdm import tqdm
 seed = 312123
 np.random.seed(seed)
 
-# This code creates a csv that reorders subjects for a permutation test.
-
 # Creates permutation sets by reordering subjects while keeping families together.
-#
 
 def main() :
     # obtain subjects' family ids from tabulated data
