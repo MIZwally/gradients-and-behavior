@@ -12,24 +12,24 @@ def main() :
     ### ABCD AND HCP GRADIENT COMPARISON ###
     ########################################
     
-    #load in matrices and subject list
+    # load in matrices and subject list
     dir = '/data/NIMH_scratch/zwallymi/gradients/individual_files/regressed/site_regressed_matrices'
     files = os.listdir(dir)
     matrices = [np.load(f'{dir}/{f}') for f in files]
     subjects = [x[4:8]+'_'+x[8:19] for x in files]
 
-    #make ABCD group level gradient
+    # make ABCD group level gradient
     all_matrices = np.stack(matrices)
     group_matrix = np.average(all_matrices, axis=0)
     group_gradients = GradientMaps(n_components=10, kernel='normalized_angle', random_state=0)
     group_gradients = group_gradients.fit(group_matrix)
 
-    #load HCP data and make gradients
+    # load HCP data and make gradients
     hcp_matrix = load_group_fc('schaefer', scale=400)
     hcp_gradient = GradientMaps(n_components=10, kernel='normalized_angle', random_state=0)
     hcp_gradient.fit(hcp_matrix)
 
-    #generate parcellated GIFTIs for spin test
+    # generate parcellated GIFTIs for spin test
     scalar_file = nib.load('/data/MLDSST/parcellations/schaefer/HCP/fslr32k/cifti/Schaefer2018_400Parcels_17Networks_order.dscalar.nii')
     scalar = scalar_file.get_fdata().squeeze()
     label_dict = [f'{x}' for x in range(1, 401)]
@@ -39,12 +39,12 @@ def main() :
     nib.save(parcel_giftiL, '/data/NIMH_scratch/zwallymi/gradients/scalars/parcel_giftiL.gii')
     nib.save(parcel_giftiR, '/data/NIMH_scratch/zwallymi/gradients/scalars/parcel_giftiR.gii')
 
-    #generate null distribution via spin test
+    # generate null distribution via spin test
     rotated = nulls.alexander_bloch(grad, n_perm=10000, atlas='fsLR', density='32k', 
                                     parcellation=['/data/NIMH_scratch/zwallymi/gradients/scalars/parcel_giftiL.gii', 
                                                 '/data/NIMH_scratch/zwallymi/gradients/scalars/parcel_giftiR.gii'])
     
-    #compute correlations and p-values
+    # compute correlations and p-values
     corr12, pval12 = stats.compare_images(group_gradients.gradients_[:,0], hcp_gradient.gradients_[:,1], nulls=rotated[:,:,0], metric='spearmanr')
     corr21, pval21 = stats.compare_images(group_gradients.gradients_[:,1], hcp_gradient.gradients_[:,0], nulls=rotated[:,:,0], metric='spearmanr')
     corr11, pval11 = stats.compare_images(group_gradients.gradients_[:,0], hcp_gradient.gradients_[:,0], nulls=rotated[:,:,0], metric='spearmanr')
@@ -58,7 +58,7 @@ def main() :
     ### INDIVIDUAL TO GROUP SPEARMAN CORRELATIONS ###
     #################################################
     
-    #make individal gradients aligned to group gradient
+    # make individal gradients aligned to group gradient
     individual_gradients = []
     gm = GradientMaps(n_components=10, kernel='normalized_angle', random_state=0, alignment='procrustes')
     for i, mat in enumerate(matrices) :
@@ -66,7 +66,7 @@ def main() :
         individual_gradients.append(gradient.aligned_)
         sub = f'sub-{subjects[i][:4]}{subjects[i][5:]}'
     
-    #calculate individual to group spearman correlations
+    # calculate individual to group spearman correlations
     group_df = pd.DataFrame(group_gradients.gradients_)
     correlations = []
     for grad, sub in zip(individual_gradients, subjects) :
