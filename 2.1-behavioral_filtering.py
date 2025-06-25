@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-#This code filters and prepares the tabulated behavioral data for PCA
+# Filters and prepares the tabulated behavioral data for PCA
 
 def main() :
     toolbox = pd.read_csv("/data/NIMH_scratch/zwallymi/tabulated_release5/core/neurocognition/nc_y_nihtb.csv", dtype=str)
