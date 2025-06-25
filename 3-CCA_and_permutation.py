@@ -3,6 +3,8 @@ from Packages.CCA.utils import *
 from Packages.CCA.permcca import permcca
 import scipy
 
+# Calculates CCA and performs 10k permutation test
+
 def seber_cca(Y, X, R, S):
     N = Y.shape[0]
     Qy, Ry, iY = scipy.linalg.qr((Y), mode='economic', pivoting=True)
@@ -28,15 +30,15 @@ def center(X):
     return X
 
 def main() :
-    #load in sides of CCA
+    # load in sides of CCA
     Xpc = np.load('/data/NIMH_scratch/zwallymi/gradients/regressed_spearman_correlations.npy')
     Ypc = np.load('/data/NIMH_scratch/zwallymi/behavioral/regressed_behavioral_pca.npy')
     pset10k = np.load('/data/NIMH_scratch/zwallymi/gradients_and_behavior/10kperm/10kperm_pset.npy')
-    #compute cca
+    # compute cca
     A, B, cc = seber_cca(center(Xpc[:,:9]), center(Ypc), 2, 2)
     print("CCA mode correlations: ", cc)     
 
-    #run permutation test, see permcca documentation for output info
+    # run permutation test, see permcca documentation for output info
     p, r, A, B, U, V, perm_dist = permcca(Xpc[:,:9], Ypc, 10000, Pset=pset10k.T)
     print("Permutation test p-values: ", p)
 
